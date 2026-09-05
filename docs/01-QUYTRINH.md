@@ -24,7 +24,7 @@ Tài liệu này mô tả toàn bộ quy trình tạo bản vá tiếng Việt c
 [work\*.ks.scn]                   (PSB đã dịch, tên entry thật)
         |
         v  copy                   (Stop game trước!)
-[game\unencrypted\*.ks.scn]       ← ENGINE TỰ ƯU TIÊN FILE NÀY
+[game\unencrypted.xp3]            ← ENGINE TỰ ƯU TIÊN FILE NÀY (pack bằng Xp3Pack)
 ```
 
 UI system tương tự nhưng đổi format: descramble → dịch → **re-scramble mode 1** → copy vào `unencrypted\`.
@@ -84,12 +84,16 @@ bin\scn-script-patch.exe <patched.json> <scn_named\X.ks.scn.psb> <work\X.ks.scn>
 - File ra **KHÔNG có đuôi `.psb`** (tên entry gốc đã gồm `.ks.scn`).
 - Patcher ghi lại toàn bộ nội dung JSON vào PSB (values, name, display_name).
 
-## Bước 5 — Deploy
+## Bước 5 — Đóng gói & Deploy
 
 ```powershell
-Stop-Process -Name limelight_lj -Force   # BẮT BUỘC: file bị lock khi game chạy
-Copy-Item work\X.ks.scn <game>\unencrypted\X.ks.scn
+# gom toàn bộ file patch vào 1 folder rồi pack thành xp3
+bin\Xp3Pack.exe <staging>\unencrypted        # -> <staging>\unencrypted.xp3
+# copy vào game root (Stop game trước!)
+Copy-Item unencrypted.xp3 <game>\unencrypted.xp3
 ```
+
+> Cũng có thể deploy dạng **folder lỏng** `unencrypted\` (cùng cơ chế override) — nhưng dạng `.xp3` gọn hơn để phân phối. **Đã test thực tế:** `unencrypted.xp3` thắng độ ưu tiên so với `patch.xp3` official (v1.22) — scene VN hiển thị đúng.
 
 ## Bước 6 — Verify
 

@@ -13,19 +13,20 @@ Bản dịch tiếng Việt **không chính thức** cho game [ライムライ�
 2. **Official Patch v1.22** của Yuzusoft — *bắt buộc*. Tải từ trang chủ Yuzusoft, chạy installer trỏ vào thư mục game (kết quả: file `patch.xp3` + `patch.xp3.sig` trong thư mục game).
 3. **Hook `version.dll`** (KirikiriUnencryptedArchive, từ dự án KirikiriTools) — *đã kèm sẵn* trong `patch/version.dll`.
 
-### Cài đặt — chỉ cần copy
-1. Copy **toàn bộ nội dung thư mục `patch/`** vào **thư mục gốc của game** (thư mục chứa `limelight_lj.exe`), giữ nguyên cấu trúc:
+### Cài đặt — chỉ cần copy 2 file
+1. Copy **2 file** sau vào **thư mục gốc của game** (thư mục chứa `limelight_lj.exe`):
    ```
    limelight_lj\
    ├── limelight_lj.exe
    ├── version.dll          ← từ patch/version.dll (nếu game chưa có sẵn hook)
+   ├── unencrypted.xp3      ← từ patch/unencrypted.xp3 (toàn bộ bản vá trong 1 file)
    ├── data.xp3, scn.xp3, patch.xp3, ...
-   └── unencrypted\         ← từ patch/unencrypted\ (138 scene + 4 file UI)
    ```
-2. **Xóa file `extract-unencrypted.txt`** trong thư mục game nếu tồn tại (đó là chế độ dump debug — nếu để lại, hook sẽ ghi nội dung archive ra đĩa khi chơi).
+2. **Xóa file `extract-unencrypted.txt`** trong thư mục game nếu tồn tại (chế độ dump debug).
 3. Chạy game bình thường.
 
-> Gỡ bỏ: xóa các file trong `unencrypted\` đã copy (scene `.ks.scn`, `uitexts.toml`, `syslangtext_jp.ini`, `default.tjs`, `config.tjs`) — game trở về nguyên bản.
+> Gỡ bỏ: xóa `unencrypted.xp3` (và `version.dll` nếu game không cần hook nào khác) — game trở về nguyên bản.
+> Nâng cấp bản vá: chỉ thay file `unencrypted.xp3`.
 
 ---
 
