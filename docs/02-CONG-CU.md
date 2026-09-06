@@ -9,7 +9,7 @@ LLJ-VN-Patch\
 ├── patch\                     (thành phẩm — copy vào game)
 │   ├── version.dll            (hook KirikiriUnencryptedArchive)
 │   └── unencrypted.xp3        (toàn bộ bản vá trong 1 file — 138 scene + 4 file UI)
-├── tools\                     (script pipeline + names_map.json + chua_dich.json)
+├── tools\                     (script pipeline + names_map.json)
 └── bin\                       (exe: scn-script-patch, scn-decompiler, scn-script-extractor, KirikiriDescrambler)
 ```
 
@@ -62,8 +62,8 @@ Ngoài ra cần (không kèm, lấy từ research gốc):
 | Script | Chức năng |
 |---|---|
 | `scramble_mode1.py` | `<in> <out> [mode]` — scramble text → `\xfe\xfe<mode>\xff\xfe` (mặc định mode 1). **Roundtrip-verified** |
-| `gen_todo2.py` | Tạo todo từ slice chưa dịch, bỏ qua mục đã đánh dấu trong `chua_dich.json` |
-| `record_skips.py` | Ghi các index chưa dịch vào `chua_dich.json` |
+| `gen_todo2.py` | Tạo todo từ slice chưa dịch *(legacy — bản dịch đã 100%, `chua_dich.json` đã xóa)* |
+| `record_skips.py` | Ghi các index chưa dịch vào `chua_dich.json` *(legacy — đã xóa file)* |
 | `merge_todo_vi.py` | Gộp `*.todo.vi.json` → `*.slice.vi.json` |
 | `cleanup_vi.py` | Gỡ prefix "Tên:" trùng name plate + normalize full-width→ASCII trong vi-text |
 | `fix_names_text.py` | Đồng bộ tên trong text theo VNDB |

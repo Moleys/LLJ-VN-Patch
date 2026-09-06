@@ -3,7 +3,7 @@ import sys, os, json, re
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 B = sys.argv[1]
 W = os.path.join(B, 'work')
-skip = json.load(open(os.path.join(B, 'chua_dich.json'), encoding='utf-8'))
+skip = json.load(open(os.path.join(B, 'chua_dich.json'), encoding='utf-8')) if os.path.exists(os.path.join(B, 'chua_dich.json')) else {}
 nm = json.load(open(os.path.join(B, 'names_map.json'), encoding='utf-8'))
 
 def skset(base):

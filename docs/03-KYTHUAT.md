@@ -52,11 +52,17 @@ data:   UTF-16LE bytes, mỗi 16-bit word bị đảo bit:
 - `.tjs` phần còn lại là **TJS2100 bytecode** (magic `TJS2100\0`) — KHÔNG descramble được bằng tool này, cần decompiler riêng (không có).
 - `KBAD100` = format khác (ctxfontprefs.tjs), chưa xử lý.
 
-## 4. Hệ thống font / multi-lang
+## 4. Hệ thống font / multi-lang — **ĐÃ GIẢI MÃ (2026-09-06)**
 
-- Message text mặc định `MessageDefault → "スキップ"` = **TFT bitmap prerender** (font1_*.tft) — chỉ có glyph JP; ký tự VN fallback sang Source Han Sans OTF → "đọc được nhưng xấu".
-- Override `deffontmap.tjs` (MessageDefault/SystemDefault → Roboto) **không ăn** — face thoại không đi qua deffontmap, hoặc font loader không đăng ký file mới ngoài archive. Overwrite byte `kosugi-regular.ttf` cũng không đổi font → cơ chế nạp font cần research thêm.
-- Multi-lang: `yuzu_default.tjs` có `multiLangLanguageTags=[jp,en,cn,tw]` + gate `Storages.isExistentStorage("_multilang.ini")`, nhưng **CUSTOM_MULTILANG bị compile-out** trong build này (tạo `_multilang.ini` không đổi gì). Asset `uitexts_en.toml`/`syslangtext_en.ini` là tàn dư template (tên char Noa/Amane… = game khác) — KHÔNG dùng trực tiếp được, chỉ dùng làm base tham khảo.
+- Chuỗi resolve của hộp thoại: `deffontmap.tjs → "MessageDefault".lang_jp = "スキップ"` → tra `embfontlist.tjs` entry `{ "name"=>"スキップ", "file"=>"font1_${size}.tft", "deffont"=>true }` = **TFT atlas prerender** (chỉ glyph JP). Ký tự lạ (VN) rơi xuống `FallbackFace` (prerenderfontex.tjs) → Source Han OTF → "đọc được nhưng xấu".
+- Lần thử override `deffontmap.tjs` trước đó thất bại vì: message face KHÔNG đi qua deffontmap một mình — embfontlist entry vẫn ghim atlas `font1_*.tft`.
+- **Giải pháp ROBOTO đã áp dụng** (trong gói hiện tại — đã hiệu chỉnh sau test thực tế):
+  1. `embfontlist.tjs` — sửa trực tiếp entry message: `{ "name"=>"スキップ", "file"=>"font1_${size}.tft", "deffont"=>true }` → `{ "name"=>"スキップ", "file"=>"Roboto-Regular.ttf", "face"=>"Roboto", "deffont"=>true }` — text hội thoại resolve qua entry này nên TTF trực tiếp thay atlas (loader có nhánh **no-atlas** render TTF qua `AddTrueTypeFont`).
+  2. `deffontmap.tjs` — **GIỮ NGUYÊN**. Bài học từ test 1: đổi `MessageDefault` sang "Roboto" chỉ đổi font của **một số label UI** (alias MessageFont), KHÔNG đụng vào text hội thoại (vẫn đi qua entry `スキップ`).
+  3. Đóng gói `Roboto-Regular.ttf` (+Bold, LICENSE) vào `unencrypted.xp3` (loader đọc `file` qua storage → hook phục vụ từ override).
+- **Format file override: plain UTF-16LE BOM** (`FF FE ...`) — KHÔNG cần scramble mode 1. Bằng chứng: CN patch ship `uitexts.toml`/`deffontmap.tjs`/`embfontlist.tjs` dạng plain UTF-16 BOM. Scramble vẫn hoạt động (syslangtext_jp.ini EN đang ship scramble), nhưng plain an toàn hơn khi tự sinh file.
+- Lưu ý decode scramble: header `FE FE 01 FF FE` = **5 byte**, body bắt đầu offset 5 (không phải 6) — decode lệch 1 byte sinh mojibake Hangul giả.
+- Multi-lang: `yuzu_default.tjs` có `multiLangLanguageTags=[jp,en,cn,tw]` + gate `_multilang.ini`, nhưng **CUSTOM_MULTILANG bị compile-out** — asset `uitexts_en.toml`/`syslangtext_en.ini` chỉ là template tàn dư (tên char Noa/Amane…) — chỉ dùng làm base tham khảo.
 
 ## 5. Root-cause crash nút ⚙ Settings
 

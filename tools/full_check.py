@@ -10,7 +10,7 @@ jp = re.compile(r'[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9fff]')
 print('=' * 60)
 
 # ---------- 1) scene patched.json: JP left trong values (tru skip) ----------
-skip = json.load(open(os.path.join(B, 'chua_dich.json'), encoding='utf-8'))
+skip = json.load(open(os.path.join(B, 'chua_dich.json'), encoding='utf-8')) if os.path.exists(os.path.join(B, 'chua_dich.json')) else {}
 def skset(base):
     raw = skip.get(base, [])
     if isinstance(raw, dict):

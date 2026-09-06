@@ -6,3 +6,6 @@ Desktop.ini
 *.tmp
 *.log
 
+
+# backups
+*.bak*
